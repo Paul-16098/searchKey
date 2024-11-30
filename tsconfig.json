@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "sourceMap": true,
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "outDir": "dist",
+    "strict": true,
+    "listFiles": true,
+    "module": "ESNext"
+  },
+  "exclude": ["**/node_modules/", "./$searchKey copy.ts"]
+}

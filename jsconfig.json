@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "sourceMap": true,
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "commonjs",
+    "outDir": "dist",
+    "strict": true
+  },
+  "exclude": ["node_modules", "**/node_modules/*", "./userjs"]
+}
