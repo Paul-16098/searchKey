@@ -39,10 +39,12 @@ const REACT_IGNORE_PROPS: Set<string> = new Set([
 ]);
 
 /**
- * 執行傳入的字符串代碼
- * @param stringCode 字符串代碼
- * @param safety 安全?
- * @returns 代碼
+ * Safely evaluates a string of JavaScript code with an optional safety check.
+ * 
+ * @param stringCode - The string of JavaScript code to evaluate.
+ * @param safety - A boolean indicating whether to perform a safety check on the code. Default is true.
+ * @returns The result of the evaluated code.
+ * @throws Will throw an error if the safety check is enabled and the code contains blacklisted keywords or patterns.
  */
 function newEval(stringCode: string, safety: boolean = true) {
   const blackList: Array<string | RegExp> = [
@@ -86,22 +88,29 @@ function newEval(stringCode: string, safety: boolean = true) {
  * @param str
  * @returns
  */
-const isNum = (str: string) => /^\d+$/.test(str);
+function isNum(str: string): boolean {
+  return /^\d+$/.test(str);
+}
+
 
 /**
- * 獲取類型
- * @param item
- * @returns
+ * Returns the type of the given item as a lowercase string.
+ *
+ * @param item - The item whose type is to be determined.
+ * @returns The type of the item as a lowercase string.
  */
-const getType = (item: any) =>
-  Object.prototype.toString.call(item).slice(8, -1).toLowerCase();
+function getType(item: any): string {
+  return Object.prototype.toString.call(item).slice(8, -1).toLowerCase();
+}
+
 
 /**
- * 獲取全屬性，包括原型鏈上的
- * @param obj
- * @returns
+ * Retrieves all property names (including inherited ones) from an object.
+ *
+ * @param obj - The object from which to retrieve the property names.
+ * @returns A Set containing all property names of the object.
  */
-function getAllProps(obj: any) {
+function getAllProps(obj: any): Set<string> {
   const props = new Set<string>();
   while (obj && obj !== Object.prototype && obj !== Function.prototype) {
     Object.getOwnPropertyNames(obj).forEach((prop) => props.add(prop));
@@ -110,11 +119,17 @@ function getAllProps(obj: any) {
   return props;
 }
 
+
 /**
- * 獲取所有元素和註釋節點
- * @returns
+ * Retrieves all nodes in the document, including elements and comments.
+ *
+ * This function uses a TreeWalker to traverse the entire document starting
+ * from the document's root element. It collects all nodes that are either
+ * elements or comments and returns them in an array.
+ *
+ * @returns {Node[]} An array containing all element and comment nodes in the document.
  */
-function getAllNodes() {
+function getAllNodes(): Node[] {
   const result: Node[] = [];
   const walker = document.createTreeWalker(
     document.documentElement,
@@ -383,10 +398,19 @@ const tag = window === window.top ? "top" : location.origin + location.pathname;
   const vueKeys = await vkc.getAllKeys();
   const reactKeys = await rkc.getAllKeys();
   /**
-   * @param key 內容名
-   * @param fuzzy 是否模糊搜索
+   * Searches for a key in multiple key collections and returns an array of objects containing the path and evaluated code.
+   *
+   * @param {string} key - The key to search for.
+   * @param {boolean} [fuzzy=false] - Whether to perform a fuzzy search (case-insensitive and partial match).
+   * @returns {{ path: string; code: any; }[]} An array of objects, each containing the path and evaluated code.
+   *
+   * The function searches through three key collections: `globalKeys`, `vueKeys`, and `reactKeys`.
+   * If `fuzzy` is true, it performs a case-insensitive search and includes keys that partially match the input key.
+   * If `fuzzy` is false, it performs an exact match search.
+   *
+   * The results are evaluated using the `newEval` function and filtered to exclude native functions.
    */
-  function $searchKey(key: string, fuzzy: boolean = false) {
+  function $searchKey(key: string, fuzzy: boolean = false): { path: string; code: any; }[] {
     const result: Array<string> = new Array();
     const dataResult: Array<{ path: string; code: any }> = new Array();
     if (fuzzy) {

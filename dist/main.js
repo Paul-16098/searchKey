@@ -36,10 +36,12 @@ const REACT_IGNORE_PROPS = new Set([
     "context", // React 的上下文
 ]);
 /**
- * 執行傳入的字符串代碼
- * @param stringCode 字符串代碼
- * @param safety 安全?
- * @returns 代碼
+ * Safely evaluates a string of JavaScript code with an optional safety check.
+ *
+ * @param stringCode - The string of JavaScript code to evaluate.
+ * @param safety - A boolean indicating whether to perform a safety check on the code. Default is true.
+ * @returns The result of the evaluated code.
+ * @throws Will throw an error if the safety check is enabled and the code contains blacklisted keywords or patterns.
  */
 function newEval(stringCode, safety = true) {
     const blackList = [
@@ -76,17 +78,23 @@ function newEval(stringCode, safety = true) {
  * @param str
  * @returns
  */
-const isNum = (str) => /^\d+$/.test(str);
+function isNum(str) {
+    return /^\d+$/.test(str);
+}
 /**
- * 獲取類型
- * @param item
- * @returns
+ * Returns the type of the given item as a lowercase string.
+ *
+ * @param item - The item whose type is to be determined.
+ * @returns The type of the item as a lowercase string.
  */
-const getType = (item) => Object.prototype.toString.call(item).slice(8, -1).toLowerCase();
+function getType(item) {
+    return Object.prototype.toString.call(item).slice(8, -1).toLowerCase();
+}
 /**
- * 獲取全屬性，包括原型鏈上的
- * @param obj
- * @returns
+ * Retrieves all property names (including inherited ones) from an object.
+ *
+ * @param obj - The object from which to retrieve the property names.
+ * @returns A Set containing all property names of the object.
  */
 function getAllProps(obj) {
     const props = new Set();
@@ -97,8 +105,13 @@ function getAllProps(obj) {
     return props;
 }
 /**
- * 獲取所有元素和註釋節點
- * @returns
+ * Retrieves all nodes in the document, including elements and comments.
+ *
+ * This function uses a TreeWalker to traverse the entire document starting
+ * from the document's root element. It collects all nodes that are either
+ * elements or comments and returns them in an array.
+ *
+ * @returns {Node[]} An array containing all element and comment nodes in the document.
  */
 function getAllNodes() {
     const result = [];
@@ -328,8 +341,17 @@ const tag = window === window.top ? "top" : location.origin + location.pathname;
     const vueKeys = await vkc.getAllKeys();
     const reactKeys = await rkc.getAllKeys();
     /**
-     * @param key 內容名
-     * @param fuzzy 是否模糊搜索
+     * Searches for a key in multiple key collections and returns an array of objects containing the path and evaluated code.
+     *
+     * @param {string} key - The key to search for.
+     * @param {boolean} [fuzzy=false] - Whether to perform a fuzzy search (case-insensitive and partial match).
+     * @returns {{ path: string; code: any; }[]} An array of objects, each containing the path and evaluated code.
+     *
+     * The function searches through three key collections: `globalKeys`, `vueKeys`, and `reactKeys`.
+     * If `fuzzy` is true, it performs a case-insensitive search and includes keys that partially match the input key.
+     * If `fuzzy` is false, it performs an exact match search.
+     *
+     * The results are evaluated using the `newEval` function and filtered to exclude native functions.
      */
     function $searchKey(key, fuzzy = false) {
         const result = new Array();
