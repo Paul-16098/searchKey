@@ -5,14 +5,16 @@
     "strictFunctionTypes": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "sourceMap": true,
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "ES7", "DOM"],
     "target": "ESNext",
-    "outDir": "dist",
+    "module": "commonjs",
+    "outDir": ".",
     "strict": true,
-    "listFiles": true,
-    "module": "ESNext"
+    "declaration": true,
+    "noImplicitAny": true,
+    "incremental": true
   },
-  "exclude": ["**/node_modules/", "./$searchKey copy.ts"]
+  "exclude": ["node_modules", "**/node_modules/*"]
 }
